@@ -1,0 +1,38 @@
+drop schema if exists "partya" cascade;
+drop owned by "partya";
+drop role "partya";
+CREATE USER "partya" WITH LOGIN PASSWORD '123123';
+CREATE SCHEMA "partya";
+GRANT USAGE ON SCHEMA "partya" TO "partya";
+GRANT SELECT, INSERT, UPDATE, DELETE, REFERENCES ON ALL tables IN SCHEMA "partya" TO "partya";
+ALTER DEFAULT privileges IN SCHEMA "partya" GRANT SELECT, INSERT, UPDATE, DELETE, REFERENCES ON tables TO "partya";
+GRANT USAGE, SELECT ON ALL sequences IN SCHEMA "partya" TO "partya";
+ALTER DEFAULT privileges IN SCHEMA "partya" GRANT USAGE, SELECT ON sequences TO "partya";
+ALTER ROLE "partya" SET search_path = "partya";
+
+drop schema if exists "partyb" cascade;
+drop owned by "partyb";
+drop role "partyb";
+CREATE USER "partyb" WITH LOGIN PASSWORD '123123';
+CREATE SCHEMA "partyb";
+GRANT USAGE ON SCHEMA "partyb" TO "partyb";
+GRANT SELECT, INSERT, UPDATE, DELETE, REFERENCES ON ALL tables IN SCHEMA "partyb" TO "partyb";
+ALTER DEFAULT privileges IN SCHEMA "partyb" GRANT SELECT, INSERT, UPDATE, DELETE, REFERENCES ON tables TO "partyb";
+GRANT USAGE, SELECT ON ALL sequences IN SCHEMA "partyb" TO "partyb";
+ALTER DEFAULT privileges IN SCHEMA "partyb" GRANT USAGE, SELECT ON sequences TO "partyb";
+ALTER ROLE "partyb" SET search_path = "partyb";
+
+drop schema if exists "notary" cascade;
+drop owned by "notary";
+drop role "notary";
+CREATE USER "notary" WITH LOGIN PASSWORD '123123';
+CREATE SCHEMA "notary";
+GRANT USAGE ON SCHEMA "notary" TO "notary";
+GRANT SELECT, INSERT, UPDATE, DELETE, REFERENCES ON ALL tables IN SCHEMA "notary" TO "notary";
+ALTER DEFAULT privileges IN SCHEMA "notary" GRANT SELECT, INSERT, UPDATE, DELETE, REFERENCES ON tables TO "notary";
+GRANT USAGE, SELECT ON ALL sequences IN SCHEMA "notary" TO "notary";
+ALTER DEFAULT privileges IN SCHEMA "notary" GRANT USAGE, SELECT ON sequences TO "notary";
+ALTER ROLE "notary" SET search_path = "notary";
+GRANT ALL ON SCHEMA "notary" TO "notary";
+GRANT ALL ON SCHEMA "partya" TO "partya";
+GRANT ALL ON SCHEMA "partyb" TO "partyb";
