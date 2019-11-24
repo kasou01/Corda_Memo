@@ -4,3 +4,28 @@ java  -Dlog4j.configurationFile=log4j2.xml -jar corda.jar
 java -Dcapsule.jvm.args=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5007" "-javaagent:drivers/jolokia-jvm-1.6.0-agent.jar=port=7007,logHandlerClass=net.corda.node.JolokiaSlf4jAdapter -Dname=PartyB -jar corda.jar
 60秒こと、NodeSchedulerService実行
 ログ出力org.hibernate.engine.jdbc.spi.SqlStatementLogger
+start IOUFlow iouValue: 99, otherParty: "O=PartyB,L=New York,C=US"
+Notaryを取得：
+    CordaX500Name notaryName = new CordaX500Name("Notary Service", "London", "GB");
+    Party specificNotary = Objects.requireNonNull(getServiceHub().getNetworkMapCache().getNotary(notaryName));
+    Party firstNotary = getServiceHub().getNetworkMapCache().getNotaryIdentities().get(0);
+Partyを取得
+    CordaX500Name counterPartyName = new CordaX500Name("NodeA", "London", "GB");
+    Party namedCounterparty = getServiceHub().getIdentityService().wellKnownPartyFromX500Name(counterPartyName);
+    Party keyedCounterparty = getServiceHub().getIdentityService().partyFromKey(dummyPubKey);
+Stateを記録（参加者以外も)
+    List<FlowSession> partySessions = Arrays.asList(counterpartySession, initiateFlow(regulator));//regulatorは参加者以外のParty
+    SignedTransaction notarisedTx2 = subFlow(new FinalityFlow(fullySignedTx, partySessions, FINALISATION.childProgressTracker()));
+相手の署名を要求する
+    SignedTransaction fullySignedTx = subFlow(new CollectSignaturesFlow(twiceSignedTx, emptySet(), SIGS_GATHERING.childProgressTracker()));
+元ネタからOutputの作成
+    DummyState ourOtherOutputState = ourOutputState.copy(77);
+Outputを特定なcontractで検証する場合
+    StateAndContract ourOutput = new StateAndContract(ourOutputState, DummyContract.PROGRAM_ID);//特定なContract
+
+Input or Time-Windowない場合は、Notary必須ではない（https://docs.corda.r3.com/api-transactions.html#creating-a-builder）
+    TransactionBuilder txBuilderNoNotary = new TransactionBuilder();
+過去のデータをInputとして利用する場合、StateAndRefタイプを作成（まずStateRefを作成、そしてtoStateAndRef（））
+    StateRef ourStateRef = new StateRef(SecureHash.sha256("過去のTx　HASH値"), 過去OutPutのIndex);
+    StateAndRef ourStateAndRef = getServiceHub().toStateAndRef(ourStateRef);
+
