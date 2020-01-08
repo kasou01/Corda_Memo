@@ -28,6 +28,23 @@ Input or Time-Windowない場合は、Notary必須ではない（https://docs.co
 過去のデータをInputとして利用する場合、StateAndRefタイプを作成（まずStateRefを作成、そしてtoStateAndRef（））
     StateRef ourStateRef = new StateRef(SecureHash.sha256("過去のTx　HASH値"), 過去OutPutのIndex);
     StateAndRef ourStateAndRef = getServiceHub().toStateAndRef(ourStateRef);
-
+gradle-tooling-api-5.4.1エラー
+    maven url に追加　: https://repo.gradle.org/gradle/libs-releases-local/
+Vaultデータ検索
+    参考： https://docs.corda.r3.com/api-vault-query.html#java-examples
+    Vault操作サービス取得
+    vaultService = getServiceHub().getVaultService();
+    １．あるstates非消費データを全件取得(default 200件,1　pageから)
+    Vault.Page<IOUState> results = vaultService.queryBy(IOUState.class);
+    ２．カスタマイズFieldからデータ検索
+    FieldInfo fieldInfo = QueryCriteriaUtils.getField("filedName",BondInfoSchemaV1.PersistentBondInfo.class);
+    CriteriaExpression field_condition = Builder.equal(fieldInfo,"value");
+    QueryCriteria field_Criterial = new QueryCriteria.VaultCustomQueryCriteria(field_condition);
+    vaultService.queryBy(IOUState.class,field_Criterial);
+    ３．カスタマイズFieldソード
+    Sort.SortColumn sortByField = new Sort.SortColumn(
+        new SortAttribute.Custom(BondInfoSchemaV1.PersistentBondInfo.class,"fieldName"),
+        Sort.Direction.DESC
+    );
 keystoreとkeypairを作成
-keytool -genkey -dname "CN=hecong, OU=poc, O=org, L=tokyo, ST=nakaitabasi, C=JP" -keystore hecong.keystore -alias keypair01 -keypass keypairpass -storepass keystorepass -keyalg RSA -keysize 2048 -validity 10000
+    keytool -genkey -dname "CN=hecong, OU=poc, O=org, L=tokyo, ST=nakaitabasi, C=JP" -keystore hecong.keystore -alias keypair01 -keypass keypairpass -storepass keystorepass -keyalg RSA -keysize 2048 -validity 10000
