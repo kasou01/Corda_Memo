@@ -5,6 +5,8 @@ java -Dcapsule.jvm.args=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,ad
 60秒こと、NodeSchedulerService実行
 ログ出力org.hibernate.engine.jdbc.spi.SqlStatementLogger
 start IOUFlow iouValue: 99, otherParty: "O=PartyB,L=New York,C=US"
+Node Config詳細
+    https://docs.corda.net/corda-configuration-file.html?highlight=node%20config#reference-conf
 Notaryを取得：
     CordaX500Name notaryName = new CordaX500Name("Notary Service", "London", "GB");
     Party specificNotary = Objects.requireNonNull(getServiceHub().getNetworkMapCache().getNotary(notaryName));
@@ -46,5 +48,47 @@ Vaultデータ検索
         new SortAttribute.Custom(BondInfoSchemaV1.PersistentBondInfo.class,"fieldName"),
         Sort.Direction.DESC
     );
-keystoreとkeypairを作成
+Cordapp署名用:
+  keystoreとkeypairを作成
     keytool -genkey -dname "CN=hecong, OU=poc, O=org, L=tokyo, ST=nakaitabasi, C=JP" -keystore hecong.keystore -alias keypair01 -keypass keypairpass -storepass keystorepass -keyalg RSA -keysize 2048 -validity 10000
+  署名のチェック
+    jarsigner -verify -verbose -certs workflows-0.1.jar
+Root CA証明書の作成
+    １．openssl genrsa -des3 -passout pass:password1 -out ca.pass.key 3072
+    ２．openssl rsa -passin pass:password1 -in ca.pass.key -out ca.key
+    ３．openssl req -new -key ca.key -out ca.csr
+        入力例： Subject: C = JP, ST = State, L = LocalityName, O = OrganizationName, OU = OrganizationalUnitName, CN = CommonName, emailAddress = Email@email.com
+                    challengePassword        :password2
+                    unstructuredName         :companyName
+        中身確認：openssl req -noout -text -in ca.csr
+    ４．openssl x509 -req -days 365 -in ca.csr -signkey ca.key -out ca.crt
+    ca.crt作成完了（Root CA)
+sslkeystore.jksファイルの作成
+    １．For each node, create a new keypair
+        keytool -genkeypair -alias cordaclienttls -keyalg RSA  -ext BC=ca:FALSE -keysize 3072 -keystore sslkeystore.jks -storepass password3 -v
+        入力例：CN=cong, OU=Organizational unit, O=organization, L=city, ST=state, C=JP
+        中身確認:keytool -list -v -keystore sslkeystore.jks
+    ２．Create CSR
+        keytool -certreq -alias cordaclienttls -keystore sslkeystore.jks -file sslkeystore.csr -v
+    ３．Root CAから署名
+        openssl x509 -req -days 365 -in sslkeystore.csr -CA ca.crt -CAkey ca.key -CAcreateserial -out sslkeystore.crt
+    ４．put Root CA to ssl keystore
+        keytool -import -trustcacerts -alias cordarootca -file ca.crt -keystore sslkeystore.jks
+    ５．put sslkeystore.crt to ssl keystore
+        keytool -importcert -alias cordaclienttls -file sslkeystore.crt -keystore sslkeystore.jks
+truststore.jksファイルの作成
+    keytool -import -trustcacerts -alias cordarootca -file ca.crt -keystore truststore.jks
+    password=>password4
+nodekeystore.jksファイルの作成(未完成)
+    １．For each node, create a new keypair
+        keytool -genkeypair -alias cordaclientca -keyalg RSA  -ext BC=ca:TRUE -keysize 3072 -keystore nodekeystore.jks -storepass password5 -v
+        入力例：CN=cong, OU=Organizational unit, O=organization, L=city, ST=state, C=JP
+        中身確認:keytool -list -v -keystore nodekeystore.jks
+    ２．Create CSR
+        keytool -certreq -alias cordaclientca -keystore nodekeystore.jks -file nodekeystore.csr -v
+    ３．Root CAから署名
+        openssl x509 -req -days 365 -in nodekeystore.csr -CA ca.crt -CAkey ca.key -CAcreateserial -out nodekeystore.crt
+    ４．put Root CA to nodekeystore
+        keytool -import -trustcacerts -alias cordarootca -file ca.crt -keystore nodekeystore.jks
+    ５．put sslkeystore.crt to nodekeystore
+        keytool -importcert -alias cordaclientca -file nodekeystore.crt -keystore nodekeystore.jks
