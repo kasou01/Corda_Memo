@@ -40,3 +40,9 @@ task runTemplateServer(type: JavaExec, dependsOn: assemble) {
     main = 'com.template.webserver.Starter'
     args '--server.port=10050', '--config.rpc.host=localhost', '--config.rpc.port=10006', '--config.rpc.username=user1', '--config.rpc.password=test'
 }
+
+task runEncodeTask(type: JavaExec, dependsOn: assemble) {
+    classpath = sourceSets.main.runtimeClasspath
+    main = 'com.template.EncodeByKey'
+    args '../lib/mykeystore.keystore', '123123', 'JKS', 'mykeypair', '098098'
+}

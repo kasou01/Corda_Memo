@@ -51,6 +51,7 @@ Vaultデータ検索
 Cordapp署名用:
   keystoreとkeypairを作成
     keytool -genkey -dname "CN=hecong, OU=poc, O=org, L=tokyo, ST=nakaitabasi, C=JP" -keystore hecong.keystore -alias keypair01 -keypass keypairpass -storepass keystorepass -keyalg RSA -keysize 2048 -validity 10000
+    keytool -genkey -alias mykeypair -dname "cn=Mark Jones, ou=Java, o=Oracle, c=US" -keyalg RSA -keystore mykeystore.keystore -keysize 1024 -validity 36500
   署名のチェック
     jarsigner -verify -verbose -certs workflows-0.1.jar
 Root CA証明書の作成
@@ -67,6 +68,7 @@ sslkeystore.jksファイルの作成
     １．For each node, create a new keypair
         keytool -genkeypair -alias cordaclienttls -keyalg RSA  -ext BC=ca:FALSE -keysize 3072 -keystore sslkeystore.jks -storepass password3 -v
         入力例：CN=cong, OU=Organizational unit, O=organization, L=city, ST=state, C=JP
+        password:password3
         中身確認:keytool -list -v -keystore sslkeystore.jks
     ２．Create CSR
         keytool -certreq -alias cordaclienttls -keystore sslkeystore.jks -file sslkeystore.csr -v
