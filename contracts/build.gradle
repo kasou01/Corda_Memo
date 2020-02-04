@@ -10,6 +10,16 @@ cordapp {
         licence "Apache License, Version 2.0"
         versionId 1
     }
+    signing {
+        enabled true
+        options {
+            keystore = '../hecong.keystore'
+            alias = 'keypair01'
+            storepass = 'keystorepass'
+            keypass = 'keypairpass'
+            storetype = 'JKS'
+        }
+    }
 }
 
 sourceSets {
