@@ -165,7 +165,8 @@ task installQuasar(type: Copy) {
         rename 'quasar-core(.*).jar', 'quasar.jar'
     }
 }
-
+//psqlパスワード省略実施が必要。
+//※環境変数"PGPASSWORD"にpostgresのパスワードを設定
 task initDB(type: Exec) {
     commandLine 'cmd', '/c', 'psql -d postgres -U postgres -f ','lib/init.sql'
 }
@@ -173,4 +174,3 @@ task runAllNodes(type: Exec) {
     workingDir = file('./build/nodes/')
     commandLine 'cmd', '/c', 'start', 'runnodes.bat'
 }
-initDB.dependsOn deployNodes
