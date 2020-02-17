@@ -9,6 +9,34 @@ ALTER DEFAULT privileges IN SCHEMA "partya" GRANT SELECT, INSERT, UPDATE, DELETE
 GRANT USAGE, SELECT ON ALL sequences IN SCHEMA "partya" TO "partya";
 ALTER DEFAULT privileges IN SCHEMA "partya" GRANT USAGE, SELECT ON sequences TO "partya";
 ALTER ROLE "partya" SET search_path = "partya";
+DROP TABLE IF EXISTS partya.user_roles;
+DROP TABLE IF EXISTS partya.roles_permissions;
+DROP TABLE IF EXISTS partya.users;
+
+CREATE TABLE IF NOT EXISTS partya.users
+(
+   username character varying(255),
+   password text NOT NULL,
+   CONSTRAINT pk1_users PRIMARY KEY (username)
+);
+
+CREATE TABLE IF NOT EXISTS partya.roles_permissions
+(
+   role_name character varying(255),
+   permission text,
+   CONSTRAINT pk1_roles_permissions PRIMARY KEY (role_name, permission)
+) ;
+
+CREATE TABLE IF NOT EXISTS partya.user_roles
+(
+   username character varying(255),
+   role_name character varying(255),
+   CONSTRAINT fk1_user_role FOREIGN KEY (username) REFERENCES partya.users (username) ON UPDATE CASCADE ON DELETE CASCADE
+);
+insert into partya.users(username,password) values ('user1','$shiro1$SHA-256$500000$CzG5ppBuiHHrnCGptezTyQ==$XV0FKXW8uHsnqqTusEpBdV+RLDAjTkyEyh0XgiRF9Co=');
+insert into partya.roles_permissions(role_name,permission) values ('admin','ALL');
+insert into partya.user_roles(username,role_name) values ('user1','admin');
+
 
 drop schema if exists "partyb" cascade;
 drop owned by "partyb";
@@ -21,6 +49,7 @@ ALTER DEFAULT privileges IN SCHEMA "partyb" GRANT SELECT, INSERT, UPDATE, DELETE
 GRANT USAGE, SELECT ON ALL sequences IN SCHEMA "partyb" TO "partyb";
 ALTER DEFAULT privileges IN SCHEMA "partyb" GRANT USAGE, SELECT ON sequences TO "partyb";
 ALTER ROLE "partyb" SET search_path = "partyb";
+
 
 drop schema if exists "notary" cascade;
 drop owned by "notary";
