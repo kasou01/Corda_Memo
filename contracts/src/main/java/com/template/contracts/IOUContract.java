@@ -26,11 +26,12 @@ public class IOUContract implements Contract {
 
     @Override
     public void verify(LedgerTransaction tx) {
+
         final CommandWithParties<IOUContract.Create> command = requireSingleCommand(tx.getCommands(), IOUContract.Create.class);
 
         // Constraints on the shape of the transaction.
-        if (!tx.getInputs().isEmpty())
-            throw new IllegalArgumentException("No inputs should be consumed when issuing an IOU.");
+//        if (!tx.getInputs().isEmpty())
+//            throw new IllegalArgumentException("No inputs should be consumed when issuing an IOU.");
         if (!(tx.getOutputs().size() == 1))
             throw new IllegalArgumentException("There should be one output state of type IOUState.");
 
