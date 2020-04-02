@@ -11,7 +11,7 @@ cordapp {
         versionId 1
     }
     signing {
-        enabled true
+        enabled false
         options {
             keystore = '../hecong.keystore'
             alias = 'keypair01'

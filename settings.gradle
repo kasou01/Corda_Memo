@@ -1,3 +1,12 @@
+pluginManagement {
+    repositories {
+        maven {
+            //url "https://plugins.gradle.org/m2/"
+            url "http://localhost:8081/repository/plugins.gradle.org/"
+        }
+    }
+}
+
 include 'workflows'
 include 'contracts'
 include 'clients'

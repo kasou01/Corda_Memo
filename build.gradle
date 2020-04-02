@@ -19,10 +19,12 @@ buildscript {
     }
 
     repositories {
-        mavenLocal()
-        mavenCentral()
-        jcenter()
-        maven { url 'https://ci-artifactory.corda.r3cev.com/artifactory/corda-releases' }
+        //mavenLocal()
+        //mavenCentral()
+        //jcenter()
+        maven { url 'http://localhost:8081/repository/maven-central/' }
+        //maven { url 'https://ci-artifactory.corda.r3cev.com/artifactory/corda-releases' }
+        maven { url 'http://localhost:8081/repository/ci-artifactory-corda-releases/' }
     }
 
     dependencies {
@@ -38,11 +40,16 @@ allprojects {
     apply plugin: 'java'
 
     repositories {
-        mavenLocal()
-        jcenter()
-        mavenCentral()
-        maven { url 'https://software.r3.com/artifactory/corda' }
-        maven { url 'https://jitpack.io' }
+        //mavenLocal()
+        //jcenter()
+        //mavenCentral()
+        maven { url 'http://localhost:8081/repository/maven-central/' }
+
+        //maven { url 'https://software.r3.com/artifactory/corda' }
+        maven { url 'http://localhost:8081/repository/software-r3-com/' }
+
+        //maven { url 'https://jitpack.io' }
+        maven { url 'http://localhost:8081/repository/jitpack/' }
     }
 
     tasks.withType(JavaCompile) {

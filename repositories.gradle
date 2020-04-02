@@ -1,8 +1,13 @@
 repositories {
-    mavenLocal()
-    mavenCentral()
-    jcenter()
-    maven { url 'https://jitpack.io' }
-    maven { url 'https://ci-artifactory.corda.r3cev.com/artifactory/corda' }
-    maven { url 'https://repo.gradle.org/gradle/libs-releases' }
+    //mavenLocal()
+    //mavenCentral()
+    //jcenter()
+    maven { url 'http://localhost:8081/repository/maven-central/' }
+    //maven { url 'https://jitpack.io' }
+    maven { url 'http://localhost:8081/repository/jitpack/' }
+    //maven { url 'https://ci-artifactory.corda.r3cev.com/artifactory/corda' }
+    maven { url 'http://localhost:8081/repository/ci-artifactory/' }
+
+    //maven { url 'https://repo.gradle.org/gradle/libs-releases' }
+    maven { url 'http://localhost:8081/repository/repo-gradle-org/' }
 }
