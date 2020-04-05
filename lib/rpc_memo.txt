@@ -1,0 +1,14 @@
+ci-artifactory
+https://ci-artifactory.corda.r3cev.com/artifactory/corda
+ci-artifactory-corda-releases
+https://ci-artifactory.corda.r3cev.com/artifactory/corda-releases
+jitpack
+https://jitpack.io
+maven-central
+https://repo1.maven.org/maven2/
+plugins.gradle.org
+https://plugins.gradle.org/m2/
+repo-gradle-org
+https://repo.gradle.org/gradle/libs-releases
+software-r3-com
+https://software.r3.com/artifactory/corda
